@@ -35,7 +35,7 @@ function getPath({ menuList, pathname }: { menuList: MenuOptions[]; pathname: st
   }, [] as { title: string; key: string }[])
 }
 
-function BaseBreadcrumb() {
+function LayoutBreadcrumb() {
   const { pathname } = useLocation()
   const { menuList = [] } = useAppSelector((state) => state.menu)
 
@@ -51,4 +51,4 @@ function BaseBreadcrumb() {
   )
 }
 
-export default BaseBreadcrumb
+export default LayoutBreadcrumb
