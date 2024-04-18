@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import Router from './routes'
+import Router from './routes/index'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import store from './store/index'

@@ -1,54 +1,48 @@
-import { useAppSelector } from '@/store'
-import { MenuOptions } from '@/store/types'
+import browserRouter from '@/routes/routes'
+import { RouteObject } from '@/routes/types'
 import { Breadcrumb } from 'antd'
 import { useLocation } from 'react-router-dom'
 
-function getPath({ menuList, pathname }: { menuList: MenuOptions[]; pathname: string }) {
-  const allPath: MenuOptions[] = []
+function getPath({ routes, pathname }: { routes: RouteObject[]; pathname: string }) {
+  const allPath: RouteObject[] = []
 
-  function getNode({ menu, pathname }: { menu: MenuOptions; pathname: string }): boolean {
-    if (menu?.children?.length) {
+  function getNode({ route, pathname }: { route: RouteObject; pathname: string }): boolean {
+    if (route?.children?.length) {
       let targetChildren = false
-      for (let i = 0; i < menu.children.length; i++) {
-        const curRes = !!getNode({ menu: menu.children[i], pathname })
+      for (let i = 0; i < route.children.length; i++) {
+        const hitRoute = !!getNode({ route: route.children[i], pathname })
         if (!targetChildren) {
-          targetChildren = curRes
+          targetChildren = hitRoute
         }
       }
-      targetChildren && allPath.push(menu)
+      targetChildren && allPath.push(route)
       return targetChildren
     } else {
-      if (pathname === '/' + menu.key) {
-        allPath.push(menu)
+      if (pathname === route.fullPath) {
+        allPath.push(route)
         return true
       }
       return false
     }
   }
 
-  for (let i = 0; i < menuList.length; i++) {
-    getNode({ menu: menuList[i], pathname })
+  for (let i = 0; i < routes.length; i++) {
+    getNode({ route: routes[i], pathname })
   }
-  return allPath.reduce((acc, cur) => {
-    acc.push({ title: cur.label, key: cur.key })
+  return allPath.reduce((acc, cur: any) => {
+    acc.push({ title: cur.meta.title, key: cur.name })
     return acc
   }, [] as { title: string; key: string }[])
 }
 
 function LayoutBreadcrumb() {
   const { pathname } = useLocation()
-  const { menuList = [] } = useAppSelector((state) => state.menu)
-
+  // const { menuList = [] } = useAppSelector((state) => state.menu)
   let breadcrumbList: any[] = []
-  if (menuList.length) {
-    breadcrumbList = getPath({ menuList, pathname })
+  if (browserRouter.routes.length) {
+    breadcrumbList = getPath({ routes: browserRouter.routes as any, pathname })
   }
-
-  return (
-    <>
-      <Breadcrumb style={{ margin: '16px 0' }} items={breadcrumbList}></Breadcrumb>
-    </>
-  )
+  return <Breadcrumb style={{ margin: '16px 0' }} items={breadcrumbList}></Breadcrumb>
 }
 
 export default LayoutBreadcrumb

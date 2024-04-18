@@ -6,6 +6,7 @@ import type { RootObject } from '../types/common'
 import { message } from 'antd'
 
 const axiosInstance: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_NAME,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   },
